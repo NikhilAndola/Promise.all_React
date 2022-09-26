@@ -41,11 +41,55 @@ export default function App() {
         thirdPromise(),
         fourthPromise(),
       ]);
-      console.log(promise);
+      console.log('using async await', promise);
     };
 
     // Function call
     promiseExecution();
+  }, []);
+
+  React.useEffect(() => {
+    let result = () => {
+      Promise.all([
+        fetch('https://api.github.com/users/ejirocodes'),
+        fetch('https://api.github.com/users/ejirocodes/repos'),
+        fetch('https://api.github.com/users/ejirocodes/followers'),
+      ])
+        .then(function (responses) {
+          return Promise.all(
+            responses.map(function (res) {
+              return res.json();
+            })
+          );
+        })
+        .then(function (data) {
+          console.log('using callback', data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    result();
+  });
+
+  React.useEffect(() => {
+    const urls = [
+      'https://api.github.com/users/ejirocodes/repos',
+      'https://api.github.com/users/ejirocodes',
+    ];
+
+    const getData = async () => {
+      // setLoading(true);
+      const [result1, result2] = await Promise.all(
+        urls.map((url) => fetch(url).then((res) => res.json()))
+      );
+      // // setLoading(false);
+      // setDataOne(result1);
+      // setDataTwo(result2);
+      console.log('result1 and result2', result1, result2);
+    };
+
+    getData();
   }, []);
 
   return (
